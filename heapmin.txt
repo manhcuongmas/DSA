@@ -1,0 +1,131 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package heap;
+
+import java.util.Arrays;
+
+/**
+ *
+ * @author Administrator
+ */
+public class HeapMin {
+    int size = 0;
+    int capacity = 0;
+    int [] items = new int[capacity];
+    int index = 0; // vi tri nut
+    
+    public int getIndexLeftChild(int parentIndex) {return 2 * parentIndex + 1;}
+    public int getIndexRightChild(int parentIndex) {return 2 * parentIndex + 2;}
+    public int getIndexParent(int childIndex) {return (childIndex - 1) / 2; } // neu no co bo me
+    
+    
+    public boolean hasLeftChild(int parentIndex) { return getIndexLeftChild(parentIndex) < size ;}
+    public boolean hasRightChild(int parentIndex) {return getIndexRightChild(parentIndex) < size ;}
+    public boolean hasParent(int childIndex) { return getIndexParent(childIndex) >= 0;}
+
+    
+    
+    private int leftChild(int index) {return items[getIndexLeftChild(index)] ;}
+    private int rightChild(int index) {return items[getIndexRightChild(index)];}
+    private int parent(int index) {return items[getIndexParent(index)];}
+    
+    
+    private void swap(int index1 , int index2) {
+        int temp = items[index1];
+        items[index1] = items[index2];
+        items[index2] = temp;
+     
+    }
+    
+   
+    
+    
+    // dam bao rang them kha nang
+    public void ensureExtraCapacity() {
+        if(size == capacity) {
+        
+            items = Arrays.copyOf(items, capacity * 2);
+            capacity *= 2;
+            
+        }
+    }
+    
+    
+    public int peek() {
+        
+        if(size == 0) throw new IllegalStateException();
+       
+        return items[0];
+    
+    }
+    
+    
+    public int pop() {
+        if(size == 0) throw new IllegalStateException();
+        int first = items[0];
+        items[0] = items[size - 1];
+        
+        size--;
+        heapifyDown();
+        return first;
+    }
+    
+    
+  
+    public void add(int number){
+        ensureExtraCapacity();
+        items[size ] = number;
+        size++;
+        heapifyUp();
+        
+        
+     
+    }
+
+    private void heapifyDown() {
+        
+        int index = 0;
+        while(hasLeftChild(index)) {
+            int smallerIndexChild = getIndexLeftChild(index);
+            if(hasRightChild(index) && items[getIndexLeftChild(index)] < items[getIndexRightChild(index)]) {
+            
+                smallerIndexChild = getIndexRightChild(index);
+            }
+            if(items[index] < items[smallerIndexChild]) {
+                
+               break;
+            
+            }
+            else {
+                 swap(smallerIndexChild, index);
+            }
+            
+            index = smallerIndexChild;
+            
+        }
+        
+       
+    }
+
+    private void heapifyUp() {
+        int index = size - 1;
+        while(hasParent(index) && parent(index) > items[index]) {
+            swap(getIndexParent(index), index);
+            index = getIndexParent(index);
+        
+        }
+         
+    }
+    
+    
+   
+    
+    
+    
+    
+    
+    
+}
